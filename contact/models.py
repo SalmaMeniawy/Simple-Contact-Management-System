@@ -14,7 +14,7 @@ class Contact (models.Model):
 
     def save(self,*args,**kwargs):
         URL = "http://localhost:8069"
-        DB = "Contact"
+        DB = "Contact_odoo"
         USERNAME = "admin"
         PASSWORD = "admin"
         COMMON = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(URL))
@@ -24,18 +24,18 @@ class Contact (models.Model):
             self.external_odoo_record_num = models.execute_kw(DB, UID, PASSWORD, 'res.partner', 'create'
                                                           , [{'name':self.name ,'street':self.address
                                                                  ,'mobile':self.mobile, 'phone':self.phone ,
-                                                              'birthdate': self.date_of_birth.strftime("%Y%m%dT") ,
+                                                              'birth_date': self.date_of_birth.strftime("%Y%m%d") ,
                                                               'email':self.email}])
         else:
             models.execute_kw(DB, UID, PASSWORD, 'res.partner', 'write', [[self.external_odoo_record_num], {
                 'name': self.name, 'street': self.address, 'mobile': self.mobile, 'phone': self.phone
-                , 'birthdate': self.date_of_birth.strftime("%Y%m%dT"), 'email': self.email
+                , 'birth_date': self.date_of_birth.strftime("%Y%m%d"), 'email': self.email
             }])
         return super(Contact, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         URL = "http://localhost:8069"
-        DB = "Contact"
+        DB = "Contact_odoo"
         USERNAME = "admin"
         PASSWORD = "admin"
         COMMON = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(URL))
