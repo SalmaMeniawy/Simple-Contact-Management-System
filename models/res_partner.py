@@ -4,6 +4,7 @@ class res_partner(models.Model):
     _name='res.partner'
     _inherit = 'res.partner'
 
+    birth_date = fields.Date(help="Date of birth ")
     @api.model
     def create(self, vals):
         # self.send_email()
