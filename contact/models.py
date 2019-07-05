@@ -20,11 +20,17 @@ class Contact (models.Model):
         COMMON = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(URL))
         UID = COMMON.authenticate(DB, USERNAME, PASSWORD, {})
         models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(URL))
-        self.external_odoo_record_num = models.execute_kw(DB, UID, PASSWORD, 'res.partner', 'create'
+        if self.external_odoo_record_num == 0:
+            self.external_odoo_record_num = models.execute_kw(DB, UID, PASSWORD, 'res.partner', 'create'
                                                           , [{'name':self.name ,'street':self.address
                                                                  ,'mobile':self.mobile, 'phone':self.phone ,
                                                               'birthdate': self.date_of_birth.strftime("%Y%m%dT") ,
                                                               'email':self.email}])
+        else:
+            models.execute_kw(DB, UID, PASSWORD, 'res.partner', 'write', [[self.external_odoo_record_num], {
+                'name': self.name, 'street': self.address, 'mobile': self.mobile, 'phone': self.phone
+                , 'birthdate': self.date_of_birth.strftime("%Y%m%dT"), 'email': self.email
+            }])
         return super(Contact, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
